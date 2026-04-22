@@ -1,0 +1,87 @@
+.hashtag-main {
+    --margin: 16px;
+    --columns: 4;
+    width: 100%;
+    position: relative;
+}
+
+.hashtag-main header {
+    margin-left: 35px;
+}
+
+.hashtag-main header .title {
+    font-size: 36px;
+    line-height: 50px;
+    font-weight: 700;
+    overflow: hidden;
+    display: block;
+    max-height: 100px;
+    -webkit-line-clamp: 2;
+    white-space: normal;
+}
+
+.hashtag-main header .info {
+    line-height: 18px;
+    font-weight: 300;
+    color: var(--transparent-light-60);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Tablet */
+@media (max-width: 1024px) {
+    .hashtag-main {
+        --columns: 3;
+    }
+
+    .hashtag-main header {
+        margin-left: 24px;
+    }
+
+    .hashtag-main header .title {
+        font-size: 32px;
+        line-height: 44px;
+    }
+}
+
+/* Mobile - Large */
+@media (max-width: 767px) {
+    .hashtag-main {
+        --columns: 1;
+        --margin: 12px;
+    }
+
+    .hashtag-main header {
+        margin-left: 16px;
+        margin-right: 16px;
+    }
+
+    .hashtag-main header .title {
+        font-size: 28px;
+        line-height: 38px;
+    }
+
+    .hashtag-main header .info {
+        font-size: 13px;
+        line-height: 16px;
+    }
+}
+
+/* Mobile - Small */
+@media (max-width: 480px) {
+    .hashtag-main header {
+        margin-left: 12px;
+        margin-right: 12px;
+    }
+
+    .hashtag-main header .title {
+        font-size: 24px;
+        line-height: 32px;
+    }
+
+    .hashtag-main header .info {
+        font-size: 12px;
+    }
+}
