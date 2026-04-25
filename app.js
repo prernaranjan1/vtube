@@ -46,18 +46,19 @@ app.use(express.static('public'))
 app.use(express.json())
 // Parse URL-encoded request bodies
 app.use(express.urlencoded({ extended: true }))
-// Set up session management with a secret key
+
 app.use(session({ 
-  secret: 'secret', 
+  secret: process.env.SESSION_SECRET || 'secret',
   resave: false, 
   saveUninitialized: false,
   cookie: { 
     secure: process.env.NODE_ENV === 'production' || process.env.RENDER === 'true',
     httpOnly: true,
     sameSite: 'lax',
-    maxAge: 24 * 60 * 60 * 1000
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
   }
 }))
+
 // Initialize Passport for authentication
 app.use(passport.initialize())
 // Enable persistent login sessions
@@ -84,9 +85,12 @@ app.use((req, res) => {
   res.status(404).render('404')
 })
 
-// Set the port for the server
+//  DYNAMIC PORT CONFIGURATION
 const port = process.env.PORT || 3000
 const host = process.env.HOST_URL || `http://localhost:${port}`
+
+// Start the server and listen on the specified port
 server.listen(port, () => {
   console.info(`Server started at ${host}`)
+  console.info(`Environment: ${process.env.NODE_ENV || 'development'}`)
 })
