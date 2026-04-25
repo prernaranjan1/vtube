@@ -73,23 +73,28 @@ router.get('/notification/:uid/:mode', notificationsChannel)
 router.get('/getThumbnail', async (req, res) => {
     try {
         const { videoId, thumbnailName } = req.query
+        
+        //  CHECK IF ENVIRONMENT VARIABLES EXIST
+        if (!process.env.BUNNY_CDN_HOSTNAME || !process.env.BUNNY_TOKEN_KEY) {
+            console.error('❌ Missing BunnyCDN environment variables')
+            return res.status(500).send('BunnyCDN not configured')
+        }
+
         if (!videoId || !thumbnailName) {
             return res.status(400).send('Missing videoId or thumbnailName')
         }
 
         const path = `/${videoId}/${thumbnailName}.jpg`
-
         const expires = Math.round(Date.now() / 1000) + 3600
-
         const base = process.env.BUNNY_TOKEN_KEY + path + expires
-
+        
+        const crypto = require('crypto')
         const md5Hash = crypto.createHash('md5').update(base).digest('binary')
-
         let token = Buffer.from(md5Hash, 'binary').toString('base64')
-
         token = token.replace(/\+/g, '-').replace(/\//g, '_').replace(/\=/g, '')
-
+        
         const imageUrl = `https://${process.env.BUNNY_CDN_HOSTNAME}${path}?token=${token}&expires=${expires}`
+        console.log('Fetching thumbnail from:', imageUrl)
 
         const response = await axios.get(imageUrl, {
             responseType: 'arraybuffer'
@@ -97,11 +102,10 @@ router.get('/getThumbnail', async (req, res) => {
         res.set('Content-Type', 'image/jpeg')
         res.send(response.data)
     } catch (error) {
-        console.error('Error:', error.message)
-        res.status(500).send('Internal Server Error')
+        console.error('❌ Thumbnail Error:', error.message)
+        res.status(500).send('Failed to load thumbnail: ' + error.message)
     }
 })
-
 //get player from bunny by video id
 router.get('/player/:id', (req, res) => {
     const videoId = req.params.id
