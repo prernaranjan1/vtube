@@ -47,7 +47,17 @@ app.use(express.json())
 // Parse URL-encoded request bodies
 app.use(express.urlencoded({ extended: true }))
 // Set up session management with a secret key
-app.use(session({ secret: 'secret', resave: false, saveUninitialized: false }))
+app.use(session({ 
+  secret: 'secret', 
+  resave: false, 
+  saveUninitialized: false,
+  cookie: { 
+    secure: process.env.NODE_ENV === 'production' || process.env.RENDER === 'true',
+    httpOnly: true,
+    sameSite: 'lax',
+    maxAge: 24 * 60 * 60 * 1000
+  }
+}))
 // Initialize Passport for authentication
 app.use(passport.initialize())
 // Enable persistent login sessions
